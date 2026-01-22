@@ -8,6 +8,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.header.writers.ReferrerPolicyHeaderWriter;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 
 @Configuration
@@ -23,10 +24,19 @@ public class SecurityConfig {
 
         http.headers(headers -> headers
                 .contentTypeOptions(Customizer.withDefaults())
-////                .referrerPolicy(ref ->
-//                        ref.policy(ReferrerPolicy
-                        );;
+                .referrerPolicy(ref ->
+                        ref.policy(ReferrerPolicyHeaderWriter.ReferrerPolicy.NO_REFERRER)
+                        )
+                .httpStrictTransportSecurity(htps -> htps
+                        .includeSubDomains(true)
+                        .preload(true)
+                        .maxAgeInSeconds(31536000))
+        );
 
-        http.authorizeHttpRequests(authorizeRequests -> authorizeRequests.anyRequest().authenticated());
-    return http.build();}
+        http.authorizeHttpRequests(authorizeRequests -> authorizeRequests
+
+                .anyRequest().authenticated());
+
+        return http.build();
+    }
 }
