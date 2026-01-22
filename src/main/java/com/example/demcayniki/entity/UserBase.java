@@ -1,6 +1,7 @@
-package com.example.demcayniki.domain.entity;
+package com.example.demcayniki.entity;
 
 
+import com.example.demcayniki.model.constants.UserStatus;
 import jakarta.persistence.*;
 import org.hibernate.annotations.UuidGenerator;
 
@@ -29,6 +30,10 @@ public abstract class UserBase {
     private String email;
     @Column(name = "PASSWORD")
     private String password;
+
+    @Column
+    @Enumerated(EnumType.STRING)
+    private UserStatus status;
 
     @Column(name = "CREATE_BY")
     private String createdBy;

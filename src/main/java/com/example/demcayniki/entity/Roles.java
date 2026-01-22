@@ -1,4 +1,4 @@
-package com.example.demcayniki.domain.entity;
+package com.example.demcayniki.entity;
 
 
 import com.example.demcayniki.model.constants.Role;
