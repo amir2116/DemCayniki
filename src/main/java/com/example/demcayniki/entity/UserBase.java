@@ -3,6 +3,8 @@ package com.example.demcayniki.entity;
 
 import com.example.demcayniki.model.constants.UserStatus;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.UuidGenerator;
 
 import java.time.LocalDateTime;
@@ -14,6 +16,8 @@ import java.util.UUID;
 @Entity
 @Table(name = "USERS")
 @Inheritance(strategy = InheritanceType.JOINED)
+@Setter
+@Getter
 public abstract class UserBase {
 
     @Id
