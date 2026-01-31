@@ -3,6 +3,8 @@ package com.example.demcayniki.entity;
 
 import com.example.demcayniki.model.constants.UserStatus;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.UuidGenerator;
 
 import java.time.LocalDateTime;
@@ -14,6 +16,8 @@ import java.util.UUID;
 @Entity
 @Table(name = "USERS")
 @Inheritance(strategy = InheritanceType.JOINED)
+@Getter
+@Setter
 public abstract class UserBase {
 
     @Id
@@ -32,8 +36,7 @@ public abstract class UserBase {
     private String password;
 
     @Column
-    @Enumerated(EnumType.STRING)
-    private UserStatus status;
+    private int status;
 
     @Column(name = "CREATE_BY")
     private String createdBy;

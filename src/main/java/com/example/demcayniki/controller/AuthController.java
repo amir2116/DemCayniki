@@ -15,8 +15,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/auth")
 public class AuthController {
 
-    @Autowired
-    private AuthService authService;
+
+    private final AuthService authService;
+
+    public AuthController(AuthService authService) {
+        this.authService = authService;
+    }
 
     public ResponseEntity<String> login(@Valid @RequestBody AuthRequest authRequest) {
         Authentication auth = authService.authenticate(authRequest.getEmail(), authRequest.getPassword());
