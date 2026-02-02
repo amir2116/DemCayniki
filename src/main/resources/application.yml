@@ -1,0 +1,37 @@
+spring:
+  application:
+    name: demcayniki-api
+
+  jackson:
+    deserialization:
+      fail-on-unknown-properties: true
+
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        format_sql: false
+  web:
+    error:
+      include-message: always
+
+server:
+  port: 8080
+
+logging:
+  level:
+    root: INFO
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+
+security:
+  jwt:
+    issuer: ${JWT_ISSUER:demcayniki-api}
+    expiration-minutes: ${JWT_EXP_MINUTES:60}
+    # secret is NOT here (never commit secrets)

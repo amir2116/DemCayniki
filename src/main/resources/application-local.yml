@@ -1,0 +1,25 @@
+#spring:
+#  datasource:
+#    url: jdbc:postgresql://localhost:5432/demcayniki
+#    username: postgres
+#    password: postgres
+#    hikari:
+#      maximum-pool-size: 5
+#      minimum-idle: 2
+#      pool-name: local-hikari
+#
+#  jpa:
+#    hibernate:
+#      ddl-auto: update
+#    properties:
+#      hibernate:
+#        format_sql: true
+#    show-sql: false
+
+logging:
+  level:
+    com.example.demcayniki: DEBUG
+
+security:
+  jwt:
+    secret: ${JWT_SECRET_LOCAL:LOCAL_DEV_SECRET_CHANGE_ME_64_CHARS_____________________}
