@@ -1,64 +1,52 @@
 package com.example.demcayniki.config;
 
 import com.example.demcayniki.entity.ConsumerUser;
+import com.example.demcayniki.entity.Roles;
 import com.example.demcayniki.model.constants.UserStatus;
 import com.example.demcayniki.repository.ConsumerUserRepository;
-import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import java.util.Locale;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
-import org.springframework.security.authentication.InternalAuthenticationServiceException;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.*;
-import org.springframework.stereotype.Service;
-
-import static com.example.demcayniki.model.constants.UserStatus.*;
-
+import static com.example.demcayniki.model.constants.UserStatus.REMOVED;
 
 @Service
-@Transactional
+@Transactional(readOnly = true)
 class UserDetailsServiceImpl implements UserDetailsService {
 
-    @Autowired
-    ConsumerUserRepository consumerUserRepository;
 
-    @Override
-    public UserDetails loadUserByUsername (String login){
-        String normalized = normalizeLogin(login);
-
-        ConsumerUser consumerUser = consumerUserRepository.findByEmailIgnoreCase(normalized)
-                .orElseThrow(() -> new UsernameNotFoundException(normalized));
-
-        switch (consumerUser.getStatus()) {
-            case ACTIVE:
-                throw new RuntimeException();
-                break;
-            case INACTIVE:
-                throw new RuntimeException();
-                break;
-            case PENDING:
-                throw new RuntimeException();
-                break;
-            case PENDING_REMOVED:
-                throw new RuntimeException();
-                break;
-            default:
-                return User
-                        .withUsername(consumerUser.getEmail())
-                        .password(consumerUser).roles("USER").build();
-        }
+    private final ConsumerUserRepository consumerUserRepository;
+    public UserDetailsServiceImpl(ConsumerUserRepository consumerUserRepository) {
+        this.consumerUserRepository = consumerUserRepository;
     }
 
-    private static String normalizeLogin(String login) {
-        if (login == null) {
-            return "";
+
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        String normalizedEmail = normalize(email);
+
+        ConsumerUser user = consumerUserRepository.findByEmailIgnoreCase(normalizedEmail)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+        if (REMOVED.equals(UserStatus.lookup(user.getStatus()))) {
+            throw new DisabledException("User removed");
         }
-        return login.trim().toLowerCase(Locale.ROOT);
+        return User
+                .withUsername(user.getEmail())
+                .password(user.getPassword())
+                .authorities(
+                        user.getRoles().stream().map(Roles::getRole).toArray(String[]::new)
+                )
+                .build();
+
+    }
+
+    private String normalize(String email) {
+        return email.trim().toLowerCase(Locale.ROOT);
     }
 }

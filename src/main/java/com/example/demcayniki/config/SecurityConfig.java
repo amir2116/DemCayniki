@@ -7,11 +7,12 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.config.web.server.ServerHttpSecurity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.header.writers.ReferrerPolicyHeaderWriter;
-import org.springframework.security.web.server.SecurityWebFilterChain;
 
 @Configuration
 @EnableWebSecurity
@@ -19,7 +20,7 @@ public class SecurityConfig {
 
     @Bean
     SecurityFilterChain springSecurityFilterChain(HttpSecurity http) {
-        http.csrf(csrf -> csrf.disable());
+        http.csrf(AbstractHttpConfigurer::disable);
 
         http.sessionManagement(session ->
                 session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
@@ -29,21 +30,29 @@ public class SecurityConfig {
                 .referrerPolicy(ref ->
                         ref.policy(ReferrerPolicyHeaderWriter.ReferrerPolicy.NO_REFERRER)
                         )
-                .httpStrictTransportSecurity(htps -> htps
+                .httpStrictTransportSecurity(hsts -> hsts
                         .includeSubDomains(true)
                         .preload(true)
                         .maxAgeInSeconds(31536000))
         );
 
-        http.authorizeHttpRequests(authorizeRequests -> authorizeRequests
+        http.authorizeHttpRequests(auth -> auth
+                .requestMatchers("/auth/**").permitAll()
+                .requestMatchers("/api/**").authenticated()
+                .anyRequest().permitAll()
+        );
 
-                .anyRequest().authenticated());
 
         return http.build();
     }
 
     @Bean
-    AuthenticationManager  authenticationManagerBean(AuthenticationConfiguration cfg) throws Exception {
+    AuthenticationManager  authenticationManagerBean(AuthenticationConfiguration cfg) {
         return cfg.getAuthenticationManager();
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 }

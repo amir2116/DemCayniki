@@ -3,17 +3,24 @@ package com.example.demcayniki.entity;
 
 import com.example.demcayniki.model.constants.Role;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import lombok.Getter;
+import lombok.Setter;
 
 
 @Entity
 @Table(name = "ROLES")
+@Getter
+@Setter
 public class Roles {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Enumerated(EnumType.STRING)
+    @NotNull
+    @NotBlank
     @Column(name = "ROLE", unique=true, nullable=false)
-    private Role role;
+    private String role;
 }

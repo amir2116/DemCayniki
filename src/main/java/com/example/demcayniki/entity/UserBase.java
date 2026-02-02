@@ -16,8 +16,8 @@ import java.util.UUID;
 @Entity
 @Table(name = "USERS")
 @Inheritance(strategy = InheritanceType.JOINED)
-@Setter
 @Getter
+@Setter
 public abstract class UserBase {
 
     @Id
@@ -36,8 +36,7 @@ public abstract class UserBase {
     private String password;
 
     @Column
-    @Enumerated(EnumType.STRING)
-    private UserStatus status;
+    private int status;
 
     @Column(name = "CREATE_BY")
     private String createdBy;
