@@ -1,4 +1,4 @@
-package com.example.demcayniki.config;
+package com.example.demcayniki.security;
 
 import com.example.demcayniki.entity.ConsumerUser;
 import com.example.demcayniki.entity.Roles;
