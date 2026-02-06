@@ -3,6 +3,7 @@ package com.example.demcayniki.entity;
 
 import com.example.demcayniki.model.constants.UserStatus;
 import jakarta.persistence.*;
+import java.time.Instant;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.UuidGenerator;
@@ -41,11 +42,11 @@ public abstract class UserBase {
     @Column(name = "CREATE_BY")
     private String createdBy;
     @Column(name = "CREATE_DATE")
-    private LocalDateTime createdAt;
+    private Instant createdAt;
     @Column(name = "UPDATE_BY")
     private String updatedBy;
     @Column(name= "UPDATE_DATE")
-    private LocalDateTime updatedAt;
+    private Instant updatedAt;
 
     @ManyToMany
     @JoinTable(

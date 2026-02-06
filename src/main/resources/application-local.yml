@@ -22,4 +22,5 @@ logging:
 
 security:
   jwt:
-    secret: ${JWT_SECRET_LOCAL:LOCAL_DEV_SECRET_CHANGE_ME_64_CHARS_____________________}
+    private-key-location: ${JWT_PRIVATE_KEY:classpath:keys/jwt_private.pem}
+    public-key-location: ${JWT_PUBLIC_KEY:classpath:keys/jwt_public.pem}

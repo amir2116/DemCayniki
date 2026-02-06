@@ -1,4 +1,4 @@
-package com.example.demcayniki.security;
+package com.example.demcayniki.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

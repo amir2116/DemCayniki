@@ -33,5 +33,10 @@ management:
 security:
   jwt:
     issuer: ${JWT_ISSUER:demcayniki-api}
-    expiration-minutes: ${JWT_EXP_MINUTES:60}
-    # secret is NOT here (never commit secrets)
+    audience: ${JWT_AUDIENCE:demcayniki-clients}
+    expiration-minutes: ${JWT_EXP_MINUTES:10}
+    key-id: ${JWT_KID:dev-1}
+    public-key-location: ${JWT_PUBLIC_KEY:classpath:keys/jwt_public.pem}
+
+security-refresh:
+  expiration-days: ${REFRESH_EXP_DAYS:14}

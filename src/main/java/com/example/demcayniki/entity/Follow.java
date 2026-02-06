@@ -2,6 +2,7 @@ package com.example.demcayniki.entity;
 
 import com.example.demcayniki.model.constants.FollowStatus;
 import jakarta.persistence.*;
+import java.time.Instant;
 import org.hibernate.annotations.UuidGenerator;
 
 import java.time.LocalDateTime;
@@ -33,15 +34,15 @@ public class Follow {
     private FollowStatus status;
 
     @Column(name = "CREATED_AT", nullable = false, updatable = false)
-    private LocalDateTime createdAt;
+    private Instant createdAt;
 
     @Column(name = "UPDATED_AT")
-    private LocalDateTime updatedAt;
+    private Instant updatedAt;
 
     @Column(name = "SOURCE")
     private String source;
 
     @Column(name = "LAST_INTERACTION_AT")
-    private LocalDateTime lastInteractionAt;
+    private Instant lastInteractionAt;
 
 }
