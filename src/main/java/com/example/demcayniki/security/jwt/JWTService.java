@@ -51,7 +51,7 @@ public class JWTService {
         .compact();
   }
 
-  private Claims parseAndValidate(String token) {
+  public Claims parseAndValidate(String token) {
     return Jwts.parser()
         .verifyWith(publicKey)
         .requireIssuer(jwtProperties.issuer())
