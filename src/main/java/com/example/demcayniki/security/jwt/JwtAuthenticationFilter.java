@@ -19,13 +19,13 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-class JwtAuthenticationFilter extends OncePerRequestFilter {
+public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
   private static final String BEARER_PREFIX = "Bearer ";
 
   private final JWTService jwtService;
 
-  JwtAuthenticationFilter(JWTService jwtService) {
+  public JwtAuthenticationFilter(JWTService jwtService) {
     this.jwtService = Objects.requireNonNull(jwtService, "JWTService must not be null");
   }
 
@@ -71,7 +71,6 @@ class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     } catch (JwtException | IllegalArgumentException ex) {
       SecurityContextHolder.clearContext();
-      // Let AuthenticationEntryPoint handle the response (401 JSON)
       throw ex;
     }
   }
