@@ -1,14 +1,12 @@
-package com.example.demcayniki.entity;
+package com.example.demcayniki.domain.entity;
 
 
-import com.example.demcayniki.model.constants.UserStatus;
 import jakarta.persistence.*;
 import java.time.Instant;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.UuidGenerator;
 
-import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;

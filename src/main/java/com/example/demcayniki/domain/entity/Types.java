@@ -1,4 +1,4 @@
-package com.example.demcayniki.entity;
+package com.example.demcayniki.domain.entity;
 
 import com.example.demcayniki.model.constants.UserType;
 import jakarta.persistence.*;

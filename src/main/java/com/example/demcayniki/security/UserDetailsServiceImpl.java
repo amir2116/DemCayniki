@@ -1,7 +1,7 @@
 package com.example.demcayniki.security;
 
-import com.example.demcayniki.entity.ConsumerUser;
-import com.example.demcayniki.entity.Roles;
+import com.example.demcayniki.domain.entity.ConsumerUser;
+import com.example.demcayniki.domain.entity.Roles;
 import com.example.demcayniki.model.constants.UserStatus;
 import com.example.demcayniki.repository.ConsumerUserRepository;
 import org.springframework.security.authentication.DisabledException;
