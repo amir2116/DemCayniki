@@ -24,3 +24,23 @@ security:
   jwt:
     private-key-location: ${JWT_PRIVATE_KEY:classpath:keys/jwt_private.pem}
     public-key-location: ${JWT_PUBLIC_KEY:classpath:keys/jwt_public.pem}
+
+spring:
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${MAIL}
+    password: ${MAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+          connectiontimeout: 5000
+          timeout: 5000
+          writetimeout: 5000
+
+app:
+  mail:
+    from: "Demcayniki <${MAIL}>"
