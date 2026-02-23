@@ -1,6 +1,7 @@
 package com.example.demcayniki.controller;
 
 import com.example.demcayniki.model.requests.AuthRequest;
+import com.example.demcayniki.model.requests.RegisterRequest;
 import com.example.demcayniki.model.response.LoginResponse;
 import com.example.demcayniki.service.AuthService;
 import jakarta.validation.Valid;
@@ -27,6 +28,11 @@ public class AuthController {
     return ResponseEntity.ok(
         authService.login(authRequest.getEmail(), authRequest.getPassword())
     );
+  }
+
+  @PostMapping
+  public ResponseEntity<LoginResponse> register(@Valid @RequestBody RegisterRequest registerRequest) {
+      return null;
   }
 
 

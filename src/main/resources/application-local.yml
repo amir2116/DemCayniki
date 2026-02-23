@@ -41,6 +41,9 @@ spring:
           timeout: 5000
           writetimeout: 5000
 
+
 app:
+  verification:
+    hmac-secret: ${VERIFICATION_HMAC_SECRET}
   mail:
     from: "Demcayniki <${MAIL}>"

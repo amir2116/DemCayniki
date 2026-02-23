@@ -1,5 +1,8 @@
-package com.example.demcayniki.model.constants;
+package com.example.demcayniki.model.constants.modifiable;
 
+import lombok.Getter;
+
+@Getter
 public enum UserStatus {
 
     ACTIVE(1, "ACTIVE"),

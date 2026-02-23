@@ -2,7 +2,7 @@ package com.example.demcayniki.security;
 
 import com.example.demcayniki.domain.entity.ConsumerUser;
 import com.example.demcayniki.domain.entity.Roles;
-import com.example.demcayniki.model.constants.UserStatus;
+import com.example.demcayniki.model.constants.modifiable.UserStatus;
 import com.example.demcayniki.repository.ConsumerUserRepository;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.userdetails.User;
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.Locale;
 
-import static com.example.demcayniki.model.constants.UserStatus.REMOVED;
+import static com.example.demcayniki.model.constants.modifiable.UserStatus.REMOVED;
 
 @Service
 @Transactional(readOnly = true)

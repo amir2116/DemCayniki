@@ -1,6 +1,6 @@
 package com.example.demcayniki.domain.entity;
 
-import com.example.demcayniki.model.constants.FollowStatus;
+import com.example.demcayniki.model.constants.modifiable.FollowStatus;
 import jakarta.persistence.*;
 import java.time.Instant;
 import org.hibernate.annotations.UuidGenerator;

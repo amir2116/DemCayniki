@@ -1,7 +1,6 @@
 package com.example.demcayniki.domain.entity;
 
 
-import com.example.demcayniki.model.constants.Role;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

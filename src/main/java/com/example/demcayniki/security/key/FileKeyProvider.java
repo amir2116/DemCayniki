@@ -1,6 +1,6 @@
 package com.example.demcayniki.security.key;
 
-import com.example.demcayniki.config.JwtProperties;
+import com.example.demcayniki.config.properties.JwtProperties;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.security.KeyFactory;

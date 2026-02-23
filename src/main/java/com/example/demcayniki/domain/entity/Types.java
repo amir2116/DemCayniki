@@ -1,10 +1,7 @@
 package com.example.demcayniki.domain.entity;
 
-import com.example.demcayniki.model.constants.UserType;
+import com.example.demcayniki.model.constants.modifiable.UserType;
 import jakarta.persistence.*;
-import org.hibernate.annotations.UuidGenerator;
-
-import java.util.UUID;
 
 @Entity
 @Table(name = "TYPES")

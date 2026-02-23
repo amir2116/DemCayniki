@@ -1,7 +1,7 @@
 package com.example.demcayniki.security.jwt;
 
 
-import com.example.demcayniki.config.JwtProperties;
+import com.example.demcayniki.config.properties.JwtProperties;
 import com.example.demcayniki.security.key.KeyProvider;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

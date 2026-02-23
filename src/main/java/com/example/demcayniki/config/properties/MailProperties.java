@@ -1,4 +1,4 @@
-package com.example.demcayniki.config;
+package com.example.demcayniki.config.properties;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 

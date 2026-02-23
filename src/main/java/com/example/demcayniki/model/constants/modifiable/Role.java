@@ -1,4 +1,4 @@
-package com.example.demcayniki.model.constants;
+package com.example.demcayniki.model.constants.modifiable;
 
 public enum Role {
 
