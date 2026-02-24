@@ -2,7 +2,9 @@ package com.example.demcayniki.controller;
 
 import com.example.demcayniki.model.requests.AuthRequest;
 import com.example.demcayniki.model.requests.RegisterRequest;
+import com.example.demcayniki.model.requests.VerifyCodeRequest;
 import com.example.demcayniki.model.response.LoginResponse;
+import com.example.demcayniki.model.response.VerificationPendingResponse;
 import com.example.demcayniki.service.AuthService;
 import jakarta.validation.Valid;
 import lombok.NonNull;
@@ -31,8 +33,17 @@ public class AuthController {
   }
 
   @PostMapping
-  public ResponseEntity<LoginResponse> register(@Valid @RequestBody RegisterRequest registerRequest) {
-      return null;
+  public ResponseEntity<VerificationPendingResponse> register(@Valid @RequestBody RegisterRequest registerRequest) {
+      return ResponseEntity.ok(
+          authService.register(registerRequest)
+      );
+  }
+
+  @PostMapping("/verify")
+  public ResponseEntity<VerificationPendingResponse> verify(@Valid @RequestBody VerifyCodeRequest verifyCodeRequest) {
+    return ResponseEntity.ok(
+        authService.verify(verifyCodeRequest)
+    );
   }
 
 

@@ -2,6 +2,7 @@ package com.example.demcayniki.domain.secondary;
 
 import jakarta.persistence.*;
 import java.time.Instant;
+import java.util.Comparator;
 import java.util.UUID;
 import lombok.*;
 import org.hibernate.annotations.UuidGenerator;
@@ -17,7 +18,7 @@ import org.hibernate.annotations.UuidGenerator;
     uniqueConstraints = @UniqueConstraint(name = "uk_pending_reg_email", columnNames = "EMAIL"),
     indexes = @Index(name = "idx_pending_reg_email", columnList = "EMAIL")
 )
-public class PendingRegistration {
+public class PendingRegistration{
 
   @Id
   @UuidGenerator
@@ -58,5 +59,6 @@ public class PendingRegistration {
   public void prePersist() {
     this.createdAt = Instant.now();
   }
+
 
 }
