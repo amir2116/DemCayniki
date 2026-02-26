@@ -7,15 +7,16 @@ public enum Role {
     ROLE_ADMIN(3, "ROLE_ADMIN"),
     ROLE_MODERATOR(2, "ROLE_MODERATOR"),
     ROLE_SUPPORT(1, "ROLE_SUPPORT"),
-    ROLE_USER(0, "ROLE_USER");
+    ROLE_USER(0, "ROLE_USER"),
+    ROLE_PENDING_USER(6, "ROLE_PENDING_USER"),;
 
     final int code;
     final String name;
 
 
-    Role(int i, String roleAdmin) {
+    Role(int i, String role) {
         this.code = i;
-        this.name = roleAdmin;
+        this.name = role;
     }
 
     public static Role lookup(int code) {
@@ -26,6 +27,7 @@ public enum Role {
             case 3 -> ROLE_ADMIN;
             case 4 -> ROLE_SUPER_ADMIN;
             case 5 -> ROLE_SYSTEM;
+            case 6 -> ROLE_PENDING_USER;
             default -> throw new IllegalArgumentException("Invalid code " + code);
         };
     }

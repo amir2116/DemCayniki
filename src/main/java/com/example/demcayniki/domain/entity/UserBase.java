@@ -1,20 +1,37 @@
 package com.example.demcayniki.domain.entity;
 
 
-import jakarta.persistence.*;
+import com.example.demcayniki.model.constants.modifiable.Role;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.Inheritance;
+import jakarta.persistence.InheritanceType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
+import jakarta.persistence.Table;
 import java.time.Instant;
-import lombok.Getter;
-import lombok.Setter;
-import org.hibernate.annotations.UuidGenerator;
-
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.UuidGenerator;
 
 
 @Entity
 @Table(name = "USERS")
 @Inheritance(strategy = InheritanceType.JOINED)
+@SuperBuilder(toBuilder = true)
+@NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @Setter
 public abstract class UserBase {
@@ -24,41 +41,59 @@ public abstract class UserBase {
     @UuidGenerator
     private UUID id;
 
-    @Column(name = "FIRSTNAME")
+  @Column(name = "FIRSTNAME", nullable = false)
     private String firstName;
     @Column(name = "LASTNAME")
     private String lastName;
 
-    @Column(name = "EMAIL")
+  @Column
+  private int sexCode;
+
+  @Column(name = "EMAIL", nullable = false, unique = true, length = 320)
     private String email;
-    @Column(name = "PASSWORD")
+
+  @Column(name = "PASSWORD", nullable = false, length = 64)
     private String password;
 
     @Column
     private int status;
 
-    @Column(name = "CREATE_BY")
-    private String createdBy;
-    @Column(name = "CREATE_DATE")
-    private Instant createdAt;
-    @Column(name = "UPDATE_BY")
-    private String updatedBy;
-    @Column(name= "UPDATE_DATE")
-    private Instant updatedAt;
+  @Column(name = "CREATE_BY", nullable = false)
+  private String createdBy = "SELF";
+  @Column(name = "CREATE_DATE", nullable = false)
+  private Instant createdAt;
+  @Column(name = "UPDATE_BY")
+  private String updatedBy = "SELF";
+  @Column(name = "UPDATE_DATE")
+  private Instant updatedAt;
 
     @ManyToMany
     @JoinTable(
             name = "USER_TYPES_MAP",
             joinColumns = @JoinColumn(name="USER_ID"),
             inverseJoinColumns = @JoinColumn(name = "TYPE_ID")
+
     )
     private Set<Types> userTypes = new HashSet<>();
 
-    @ManyToMany()
-            @JoinTable(
+  @ManyToMany()
+  @JoinTable(
                     name = "USER_ROLES_MAP",
                     joinColumns = @JoinColumn(name = "USER_ID"),
                     inverseJoinColumns = @JoinColumn(name="ROLE_ID")
             )
-    private Set<Roles> roles = new HashSet<>();
+  private Set<Roles> roles = new HashSet<>();
+
+  @PrePersist
+  public void prePersist() {
+    this.createdAt = Instant.now();
+  }
+
+  @PreUpdate
+  public void preUpdate() {
+    this.updatedAt = Instant.now();
+  }
+
+  public void grantRole(Role role) {
+  }
 }

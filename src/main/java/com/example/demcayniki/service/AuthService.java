@@ -3,6 +3,7 @@ package com.example.demcayniki.service;
 import static com.example.demcayniki.model.constants.modifiable.UserStatus.REMOVED;
 
 import com.example.demcayniki.domain.entity.ConsumerUser;
+import com.example.demcayniki.domain.entity.Roles;
 import com.example.demcayniki.domain.secondary.PendingRegistration;
 import com.example.demcayniki.model.requests.RegisterRequest;
 import com.example.demcayniki.model.requests.VerifyCodeRequest;
@@ -13,12 +14,13 @@ import com.example.demcayniki.repository.PendingRegistrationRepository;
 import com.example.demcayniki.security.jwt.JWTService;
 import com.example.demcayniki.util.HmacHasher;
 import jakarta.transaction.Transactional;
-import jakarta.validation.Valid;
 import java.time.Instant;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Random;
+import java.util.Set;
 import java.util.UUID;
 import lombok.Synchronized;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -98,19 +100,14 @@ public class AuthService {
     if(pendings.stream().anyMatch(pendingRegistration -> pendingRegistration.getExpiresAt().isBefore(Instant.now()))){
       PendingRegistration pendingRegistration = pendingRegistrationRepository.findTopByEmailOrderByCreatedAtDesc(registerRequest.getEmail()).orElseThrow(()->new RuntimeException("pendingRegistration not found"));
       return new VerificationPendingResponse(String.valueOf(pendingRegistration.getId()),registerRequest.getName(), pendingRegistration.getExpiresAt());
-    };
-    Instant now = Instant.now();
+    }
+
+
     String verificationCode = String.valueOf(random.nextInt(100_000,1_000_000));
-    PendingRegistration pendingRegistration = PendingRegistration.builder()
-        .id(UUID.randomUUID())
-        .email(registerRequest.getEmail())
-        .attemptsLeft(50)
-        .createdAt(now)
-        .expiresAt(now.plusSeconds(300))
-        .codeHash(hmacHasher.hmacSha256Hex(verificationCode))
-        .verified(false)
-        .build();
-    pendingRegistrationRepository.save(pendingRegistration);
+
+    PendingRegistration pendingRegistration = savePending(registerRequest.getEmail(), verificationCode);
+
+    saveConsumerUser(registerRequest);
 
     mailService.sendEmail(registerRequest.getEmail(), registerRequest.getName(), verificationCode);
 
@@ -118,7 +115,32 @@ public class AuthService {
   }
 
 
+
   public VerificationPendingResponse verify(VerifyCodeRequest verifyCodeRequest) {
 return null;
   }
+
+  private PendingRegistration savePending(String email, String verificationCode) {
+    Instant now = Instant.now();
+    PendingRegistration pendingRegistration = PendingRegistration.builder()
+        .id(UUID.randomUUID())
+        .email(email)
+        .attemptsLeft(50)
+        .codeHash(hmacHasher.hmacSha256Hex(verificationCode))
+        .verified(false)
+        .createdAt(now)
+        .expiresAt(now.plusSeconds(300))
+        .build();
+    return pendingRegistrationRepository.save(pendingRegistration);
+  }
+
+  private void saveConsumerUser(RegisterRequest registerRequest) {
+    ConsumerUser user = ConsumerUser.builder()
+        .id(UUID.randomUUID())
+        .email(registerRequest.getEmail())
+        .password(hmacHasher.hmacSha256Hex(registerRequest.getPassword()))
+        .build();
+    HashSet<Roles> roles = new HashSet<>();
+  }
+
 }
