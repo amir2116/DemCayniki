@@ -32,7 +32,7 @@ public class AuthController {
     );
   }
 
-  @PostMapping
+  @PostMapping("/register")
   public ResponseEntity<VerificationPendingResponse> register(@Valid @RequestBody RegisterRequest registerRequest) {
       return ResponseEntity.ok(
           authService.register(registerRequest)

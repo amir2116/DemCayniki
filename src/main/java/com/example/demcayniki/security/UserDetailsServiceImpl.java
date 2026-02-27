@@ -1,7 +1,7 @@
 package com.example.demcayniki.security;
 
 import com.example.demcayniki.domain.entity.ConsumerUser;
-import com.example.demcayniki.domain.entity.Roles;
+import com.example.demcayniki.domain.entity.Role;
 import com.example.demcayniki.model.constants.modifiable.UserStatus;
 import com.example.demcayniki.repository.ConsumerUserRepository;
 import org.springframework.security.authentication.DisabledException;
@@ -40,7 +40,7 @@ class UserDetailsServiceImpl implements UserDetailsService {
                 .withUsername(user.getEmail())
                 .password(user.getPassword())
                 .authorities(
-                        user.getRoles().stream().map(Roles::getRole).toArray(String[]::new)
+                        user.getRoles().stream().map(Role::getRole).toArray(String[]::new)
                 )
                 .build();
 

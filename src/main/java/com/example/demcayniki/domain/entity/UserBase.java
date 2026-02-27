@@ -1,7 +1,7 @@
 package com.example.demcayniki.domain.entity;
 
 
-import com.example.demcayniki.model.constants.modifiable.Role;
+import com.example.demcayniki.model.constants.modifiable.RoleEnum;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -16,6 +16,7 @@ import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import java.time.Instant;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
@@ -46,7 +47,10 @@ public abstract class UserBase {
     @Column(name = "LASTNAME")
     private String lastName;
 
-  @Column
+  @Column(name = "BIRTH_DATE")
+  private Instant birthDate;
+
+  @Column(name = "SEX_CODE")
   private int sexCode;
 
   @Column(name = "EMAIL", nullable = false, unique = true, length = 320)
@@ -82,7 +86,7 @@ public abstract class UserBase {
                     joinColumns = @JoinColumn(name = "USER_ID"),
                     inverseJoinColumns = @JoinColumn(name="ROLE_ID")
             )
-  private Set<Roles> roles = new HashSet<>();
+  private Set<Role> roles = new HashSet<>();
 
   @PrePersist
   public void prePersist() {
@@ -94,6 +98,24 @@ public abstract class UserBase {
     this.updatedAt = Instant.now();
   }
 
-  public void grantRole(Role role) {
+
+  public void grantRole(RoleEnum role) {
+    roles.add(new Role(role.getCode(),role.name()));
+  }
+
+  public void revokeRole(RoleEnum role) {
+    roles.remove(new Role(role.getCode(),role.name()));
+  }
+
+  public void grantRole(List<RoleEnum> roleEnumList){
+    for (RoleEnum roleEnum : roleEnumList) {
+      roles.add(new Role(roleEnum.getCode(),roleEnum.name()));
+    }
+  }
+
+  public void revokeRole(List<RoleEnum> roleEnumList){
+    for (RoleEnum roleEnum : roleEnumList) {
+      roles.remove(new Role(roleEnum.getCode(),roleEnum.name()));
+    }
   }
 }

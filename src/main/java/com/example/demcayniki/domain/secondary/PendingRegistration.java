@@ -1,10 +1,19 @@
 package com.example.demcayniki.domain.secondary;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Index;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import java.time.Instant;
-import java.util.Comparator;
 import java.util.UUID;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.UuidGenerator;
 
 @Getter
@@ -18,47 +27,57 @@ import org.hibernate.annotations.UuidGenerator;
     uniqueConstraints = @UniqueConstraint(name = "uk_pending_reg_email", columnNames = "EMAIL"),
     indexes = @Index(name = "idx_pending_reg_email", columnList = "EMAIL")
 )
-public class PendingRegistration{
+public class PendingRegistration {
 
   @Id
   @UuidGenerator
   @Column(name = "ID", nullable = false, updatable = false)
-  private UUID id;
+  UUID id;
 
   @Column(name = "EMAIL", nullable = false, length = 320)
-  private String email;
+  String email;
 
-  // store HASH, not raw code
   @Column(name = "CODE_HASH", nullable = false, length = 64)
-  private String codeHash;
+  String codeHash;
+
+  @Column(name = "FLOW_TOKEN_HASH", nullable = false, length = 64)
+  String flowTokenHash;
+
+  @Column(name = "FLOW_EXPIRES_AT", nullable = false)
+  Instant flowExpiresAt;
 
   @Column(name = "VERIFIED", nullable = false)
-  private boolean verified;
+  boolean verified;
 
   @Column(name = "ATTEMPTS_LEFT", nullable = false)
-  private int attemptsLeft;
+  int attemptsLeft;
 
   @Column(name = "CREATED_AT", nullable = false)
-  private Instant createdAt;
+  Instant createdAt;
 
   @Column(name = "EXPIRES_AT", nullable = false)
-  private Instant expiresAt;
+  Instant expiresAt;
 
-  // rate limit resend
   @Column(name = "RESEND_AVAILABLE_AT", nullable = false)
-  private Instant resendAvailableAt;
-
-  // after verify step, you can issue a flow token for "complete registration"
-  @Column(name = "FLOW_TOKEN_HASH", length = 64)
-  private String flowTokenHash;
-
-  @Column(name = "FLOW_EXPIRES_AT")
-  private Instant flowExpiresAt;
+  Instant resendAvailableAt;
 
   @PrePersist
-  public void prePersist() {
-    this.createdAt = Instant.now();
+  void prePersist() {
+    Instant now = Instant.now();
+    if (createdAt == null) {
+      createdAt = now;
+    }
+    if (expiresAt == null) {
+      expiresAt = createdAt.plusSeconds(300);
+    }
+    if (flowExpiresAt == null) {
+      flowExpiresAt = createdAt.plusSeconds(300);
+    }
+    if (resendAvailableAt == null) {
+      resendAvailableAt = createdAt.plusSeconds(30);
+    }
+    if (attemptsLeft == 0) {
+      attemptsLeft = 5;
+    }
   }
-
-
 }

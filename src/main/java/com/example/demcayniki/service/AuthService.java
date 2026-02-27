@@ -1,9 +1,10 @@
 package com.example.demcayniki.service;
 
+import static com.example.demcayniki.model.constants.modifiable.RoleEnum.ROLE_PENDING_USER;
 import static com.example.demcayniki.model.constants.modifiable.UserStatus.REMOVED;
 
 import com.example.demcayniki.domain.entity.ConsumerUser;
-import com.example.demcayniki.domain.entity.Roles;
+import com.example.demcayniki.domain.entity.Role;
 import com.example.demcayniki.domain.secondary.PendingRegistration;
 import com.example.demcayniki.model.requests.RegisterRequest;
 import com.example.demcayniki.model.requests.VerifyCodeRequest;
@@ -15,14 +16,11 @@ import com.example.demcayniki.security.jwt.JWTService;
 import com.example.demcayniki.util.HmacHasher;
 import jakarta.transaction.Transactional;
 import java.time.Instant;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Random;
-import java.util.Set;
 import java.util.UUID;
-import lombok.Synchronized;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -37,11 +35,11 @@ public class AuthService {
   private final AuthenticationManager authenticationManager;
   private final JWTService jwtService;
   private final ConsumerUserRepository consumerUserRepository;
-  private final HmacHasher  hmacHasher;
+  private final HmacHasher hmacHasher;
   private final MailService mailService;
   private final PendingRegistrationRepository pendingRegistrationRepository;
 
-  private final Random random=new Random();
+  private final Random random = new Random();
 
   public AuthService(AuthenticationManager authenticationManager, JWTService jwtService,
                      ConsumerUserRepository consumerUserRepository, HmacHasher hmacHasher, MailService mailService,
@@ -85,39 +83,44 @@ public class AuthService {
     return Map.of("roles", roles);
   }
 
-  @Transactional(rollbackOn =  Exception.class)
-  @Synchronized
+  @Transactional(rollbackOn = Exception.class)
   public VerificationPendingResponse register(RegisterRequest registerRequest) {
-    List<ConsumerUser> userList = consumerUserRepository.findAllByEmail(registerRequest.getEmail());
-
-    if(userList.stream().anyMatch(user -> REMOVED.getCode()!=user.getStatus())) {
+    String email = registerRequest.getEmail().trim();
+    if (consumerUserRepository.existsByEmailAndStatusNot(email, REMOVED.getCode())) {
       throw new RuntimeException("email is already in use");
     }
-    List<PendingRegistration> pendings =pendingRegistrationRepository.findAllByEmail(registerRequest.getEmail());
-    if(pendings.stream().anyMatch(PendingRegistration::isVerified)){
-      throw new RuntimeException("email is already in use");
+    Instant now = Instant.now();
+    PendingRegistration pendingRegistration = pendingRegistrationRepository.findByEmail(email).orElse(null);
+    if (pendingRegistration!= null ) {
+      if(pendingRegistration.isVerified()) {
+        throw new RuntimeException("email is already in use");
+      }
+      if (pendingRegistration.getExpiresAt().isAfter(now)) {
+      return new VerificationPendingResponse(String.valueOf(pendingRegistration.getId()),
+          registerRequest.getName(),
+          pendingRegistration.getExpiresAt(),"wef"//will write this after
+          );
+      }
     }
-    if(pendings.stream().anyMatch(pendingRegistration -> pendingRegistration.getExpiresAt().isBefore(Instant.now()))){
-      PendingRegistration pendingRegistration = pendingRegistrationRepository.findTopByEmailOrderByCreatedAtDesc(registerRequest.getEmail()).orElseThrow(()->new RuntimeException("pendingRegistration not found"));
-      return new VerificationPendingResponse(String.valueOf(pendingRegistration.getId()),registerRequest.getName(), pendingRegistration.getExpiresAt());
-    }
 
 
-    String verificationCode = String.valueOf(random.nextInt(100_000,1_000_000));
+    String verificationCode = String.valueOf(random.nextInt(100_000, 1_000_000));
 
-    PendingRegistration pendingRegistration = savePending(registerRequest.getEmail(), verificationCode);
+    pendingRegistration = savePending(registerRequest.getEmail(), verificationCode);
 
     saveConsumerUser(registerRequest);
 
     mailService.sendEmail(registerRequest.getEmail(), registerRequest.getName(), verificationCode);
 
-    return new VerificationPendingResponse(String.valueOf(pendingRegistration.getId()), registerRequest.getName(), pendingRegistration.getExpiresAt());
+    return new VerificationPendingResponse(String.valueOf(pendingRegistration.getId()),
+        registerRequest.getName(),
+        pendingRegistration.getExpiresAt(),"asdf"
+        );
   }
 
 
-
   public VerificationPendingResponse verify(VerifyCodeRequest verifyCodeRequest) {
-return null;
+    return null;
   }
 
   private PendingRegistration savePending(String email, String verificationCode) {
@@ -130,6 +133,7 @@ return null;
         .verified(false)
         .createdAt(now)
         .expiresAt(now.plusSeconds(300))
+//        .flowTokenHash()// i was writing this
         .build();
     return pendingRegistrationRepository.save(pendingRegistration);
   }
@@ -138,9 +142,12 @@ return null;
     ConsumerUser user = ConsumerUser.builder()
         .id(UUID.randomUUID())
         .email(registerRequest.getEmail())
+        .firstName(registerRequest.getName())
+        .lastName(registerRequest.getLastName())
         .password(hmacHasher.hmacSha256Hex(registerRequest.getPassword()))
         .build();
-    HashSet<Roles> roles = new HashSet<>();
+    user.grantRole(ROLE_PENDING_USER);
+    consumerUserRepository.save(user);
   }
 
 }

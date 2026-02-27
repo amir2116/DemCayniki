@@ -1,6 +1,9 @@
 package com.example.demcayniki.model.constants.modifiable;
 
-public enum Role {
+import lombok.Getter;
+
+@Getter
+public enum RoleEnum {
 
     ROLE_SYSTEM(5, "ROLE_SYSTEM"),
     ROLE_SUPER_ADMIN(4, "ROLE_SUPER_ADMIN"),
@@ -14,12 +17,12 @@ public enum Role {
     final String name;
 
 
-    Role(int i, String role) {
+    RoleEnum(int i, String role) {
         this.code = i;
         this.name = role;
     }
 
-    public static Role lookup(int code) {
+    public static RoleEnum lookup(int code) {
         return switch (code) {
             case 0 -> ROLE_USER;
             case 1 -> ROLE_SUPPORT;
