@@ -11,10 +11,14 @@ public class VerifyCodeRequest {
 
   @NotBlank
   @NotNull
-  private String UUid;
+  private String UUID;
 
   @NotBlank
   @NotNull
   private String code;
+
+  @NotBlank
+  @NotNull
+  private String flowToken;
 }
 

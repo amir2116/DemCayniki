@@ -48,10 +48,6 @@ public class RegisterRequest {
   @Size(min = 1, max = 100)
   int age;
 
-  @Email
-  @NotNull
-  @Size(min = 1, max = 100)
-
   @NotBlank
   @Email
   @Size(max = 320)

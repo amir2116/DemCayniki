@@ -15,4 +15,11 @@ public interface ConsumerUserRepository extends JpaRepository<ConsumerUser, UUID
   List<ConsumerUser> findAllByEmail(String email);
 
   boolean existsByEmailAndStatusNot(String email, int status);
+
+  List<ConsumerUser> findByEmail(String email);
+
+
+  Optional<ConsumerUser> findByEmailAndStatus(String email, int code);
+
+  List<ConsumerUser> findAllByEmailAndStatus(String email, int status);
 }

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.security.core.parameters.P;
 
 public interface PendingRegistrationRepository extends JpaRepository<PendingRegistration, UUID> {
   Optional<PendingRegistration> findByEmail(String email);

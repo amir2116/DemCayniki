@@ -40,7 +40,7 @@ public class AuthController {
   }
 
   @PostMapping("/verify")
-  public ResponseEntity<VerificationPendingResponse> verify(@Valid @RequestBody VerifyCodeRequest verifyCodeRequest) {
+  public ResponseEntity<LoginResponse> verify(@Valid @RequestBody VerifyCodeRequest verifyCodeRequest) {
     return ResponseEntity.ok(
         authService.verify(verifyCodeRequest)
     );
